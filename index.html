@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#356b3b">
+<title>کبیرلوله | محاسبه سریع PE80 / PE100</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f7f5;color:#172019;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif}
+.wrap{max-width:900px;margin:auto;padding:24px 16px 50px}.brand{text-align:center;margin:8px 0 24px}.brand h1{margin:0;font-size:30px;font-weight:900}.brand p{margin:7px 0 0;color:#68736a;font-weight:700}
+.card{background:#fff;border:1px solid #e0e6e1;border-radius:28px;box-shadow:0 10px 35px rgba(25,45,30,.07);padding:24px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.field label{display:block;margin:0 0 8px;font-weight:800;color:#667068}
+.field input,.field select{width:100%;height:62px;border:2px solid #dfe6df;border-radius:20px;background:#fbfcfb;padding:0 18px;font-size:20px;font-weight:800;color:#172019;outline:none}
+.field input:focus,.field select:focus{border-color:#4b8b51}.action{margin-top:20px;width:100%;height:64px;border:0;border-radius:20px;background:#356b3b;color:white;font-size:21px;font-weight:900}
+.status{min-height:28px;margin-top:14px;text-align:center;font-weight:800;color:#647067}.result{margin-top:22px;background:#243c29;color:white;border-radius:26px;padding:24px}
+.result h2{margin:0 0 18px;font-size:24px}.rows{display:grid;gap:10px}.row{display:flex;justify-content:space-between;gap:20px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.13);font-weight:800}
+.row:last-child{border-bottom:0}.total{margin-top:15px;padding:18px;border-radius:18px;background:#315737;font-size:24px;font-weight:950;text-align:center}
+.note{margin-top:16px;color:#6a746d;font-size:13px;line-height:1.8;text-align:center}
+@media(max-width:650px){.wrap{padding:16px 12px 40px}.card{padding:18px;border-radius:24px}.grid{grid-template-columns:1fr;gap:14px}.brand h1{font-size:27px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="brand"><h1>کبیرلوله</h1><p>محاسبه سریع قیمت لوله پلی‌اتیلن</p></div>
+<div class="card">
+<div class="grid">
+<div class="field"><label>مواد اولیه</label><select id="material"><option value="PE100">PE100</option><option value="PE80">PE80</option></select></div>
+<div class="field"><label>قیمت هر کیلو (ریال)</label><input id="kgPrice" inputmode="numeric" type="number" min="0" step="1" placeholder="مثلاً 1,000,000"></div>
+<div class="field"><label>سایز / قطر خارجی (mm)</label><select id="diameter"><option value="20">20</option><option value="25">25</option><option value="32">32</option><option value="40">40</option><option value="50">50</option><option value="63">63</option><option value="75">75</option><option value="90">90</option><option value="110">110</option><option value="125">125</option><option value="160">160</option><option value="200">200</option><option value="250">250</option><option value="315">315</option><option value="355">355</option><option value="400">400</option></select></div>
+<div class="field"><label>فشار (bar)</label><select id="pressure"><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="10" selected>10</option><option value="12.5">12.5</option></select></div>
+<div class="field"><label>متراژ لوله (m)</label><input id="length" inputmode="decimal" type="number" min="0.001" step="0.001" value="1"></div>
+</div>
+<button class="action" id="calculate">محاسبه قیمت</button>
+<div class="status" id="status"></div>
+<div class="result">
+<h2>نتیجه محاسبه</h2>
+<div class="rows">
+<div class="row"><span>SDR</span><span id="rSdr">—</span></div>
+<div class="row"><span>ضخامت</span><span id="rThick">—</span></div>
+<div class="row"><span>وزن هر متر</span><span id="rWeight">—</span></div>
+<div class="row"><span>قیمت هر متر</span><span id="rMeter">—</span></div>
+</div>
+<div class="total" id="rTotal">قیمت کل: —</div>
+</div>
+<div class="note">ورودی‌ها: PE80/PE100، قیمت هر کیلو، سایز، فشار و متراژ.<br>فیلد چگالی کاملاً حذف شده است.</div>
+</div>
+</div>
+<script>
+const TABLES = {"PE80":{"20":{"4":null,"6":null,"8":null,"10":null,"12.5":[2.0,0.114]},"25":{"4":null,"6":null,"8":null,"10":[2.0,0.147],"12.5":[2.3,0.168]},"32":{"4":null,"6":null,"8":[2.0,0.191],"10":[2.4,0.228],"12.5":[3.0,0.275]},"40":{"4":null,"6":[2.0,0.243],"8":[2.4,0.29],"10":[3.0,0.356],"12.5":[3.7,0.425]},"50":{"4":null,"6":[2.4,0.368],"8":[3.0,0.447],"10":[3.7,0.543],"12.5":[4.6,0.659]},"63":{"4":null,"6":[3.0,0.571],"8":[3.8,0.72],"10":[4.7,0.865],"12.5":[5.8,1.043]},"75":{"4":null,"6":[3.6,0.817],"8":[4.5,1.005],"10":[5.6,1.226],"12.5":[6.8,1.456]},"90":{"4":null,"6":[4.3,1.172],"8":[5.4,1.445],"10":[6.7,1.756],"12.5":[8.2,2.11]},"110":{"4":null,"6":[5.3,1.759],"8":[6.6,2.151],"10":[8.1,2.601],"12.5":[10.0,3.13]},"125":{"4":null,"6":[6.0,2.247],"8":[7.4,2.743],"10":[9.2,3.352],"12.5":[11.4,4.06]},"160":{"4":null,"6":[7.7,3.692],"8":[9.5,4.495],"10":[11.8,5.48],"12.5":[14.6,6.643]},"200":{"4":null,"6":[9.6,5.748],"8":[11.9,7.018],"10":[14.7,8.531],"12.5":[18.2,10.36]},"250":{"4":null,"6":[11.9,8.889],"8":[14.8,10.91],"10":[18.4,13.34],"12.5":[22.7,16.12]},"315":{"4":[9.7,9.318],"6":[15.0,14.1],"8":[18.7,17.35],"10":[23.2,21.19],"12.5":[28.6,25.58]},"355":{"4":[10.9,11.78],"6":[16.9,17.9],"8":[21.1,22.09],"10":[26.1,26.87],"12.5":[32.2,32.47]},"400":{"4":[12.3,15.01],"6":[19.1,22.83],"8":[23.7,27.91],"10":[29.4,34.07],"12.5":[36.3,41.23]}},"PE100":{"20":{"4":null,"6":null,"8":null,"10":null,"12.5":null},"25":{"4":null,"6":null,"8":null,"10":null,"12.5":[2.0,0.147]},"32":{"4":null,"6":null,"8":[null,0.191],"10":[2.4,0.228],"12.5":null},"40":{"4":null,"6":null,"8":[2.0,0.243],"10":[2.4,0.29],"12.5":[3.0,0.356]},"50":{"4":null,"6":[2.0,0.307],"8":[2.4,0.368],"10":[3.0,0.447],"12.5":[3.7,0.543]},"63":{"4":null,"6":[2.5,0.486],"8":[3.0,0.571],"10":[3.8,0.72],"12.5":[4.7,0.865]},"75":{"4":null,"6":[2.9,0.665],"8":[3.6,0.817],"10":[4.5,1.005],"12.5":[5.6,1.226]},"90":{"4":null,"6":[3.5,0.965],"8":[4.3,1.172],"10":[5.4,1.445],"12.5":[6.7,1.756]},"110":{"4":null,"6":[4.2,1.416],"8":[5.3,1.759],"10":[6.6,2.151],"12.5":[8.1,2.601]},"125":{"4":null,"6":[4.8,1.824],"8":[6.0,2.247],"10":[7.4,2.743],"12.5":[9.2,3.352]},"160":{"4":null,"6":[6.2,3.02],"8":[7.7,3.692],"10":[9.5,4.495],"12.5":[11.8,5.48]},"200":{"4":null,"6":[7.7,4.664],"8":[9.6,5.748],"10":[11.9,7.018],"12.5":[14.7,8.531]},"250":{"4":null,"6":[9.6,7.262],"8":[11.9,8.889],"10":[14.8,10.91],"12.5":[22.7,16.12]},"315":{"4":[7.7,7.46],"6":[12.1,11.54],"8":[15.0,14.1],"10":[18.7,17.35],"12.5":[23.2,21.19]},"355":{"4":[8.7,9.49],"6":[13.6,14.58],"8":[16.9,17.9],"10":[21.1,22.09],"12.5":[26.1,26.87]},"400":{"4":[9.8,12.03],"6":[15.3,18.49],"8":[19.1,22.83],"10":[23.7,27.91],"12.5":[29.4,34.07]}}};
+
+const SDR = {
+  PE80: {"4":"SDR 33","6":"SDR 21","8":"SDR 17","10":"SDR 13.6","12.5":"SDR 11"},
+  PE100: {"4":"SDR 41","6":"SDR 26","8":"SDR 21","10":"SDR 17","12.5":"SDR 13.6"}
+};
+
+function num(v) {
+  if (v === null || v === undefined) return NaN;
+  v = String(v).replace(/,/g,"").replace(/٬/g,"").replace(/٫/g,".").trim();
+  var fa = "۰۱۲۳۴۵۶۷۸۹", ar = "٠١٢٣٤٥٦٧٨٩";
+  for (var i=0;i<10;i++) {
+    v = v.split(fa[i]).join(String(i));
+    v = v.split(ar[i]).join(String(i));
+  }
+  return Number(v);
+}
+
+function money(x) {
+  return new Intl.NumberFormat("fa-IR", {maximumFractionDigits:0}).format(x) + " ریال";
+}
+
+function init() {
+  var kgPrice = document.getElementById("kgPrice");
+  var material = document.getElementById("material");
+  var diameter = document.getElementById("diameter");
+  var pressure = document.getElementById("pressure");
+  var length = document.getElementById("length");
+  var status = document.getElementById("status");
+  var button = document.getElementById("calculate");
+
+  function update() {
+    var mat = material.value;
+    var d = String(diameter.value);
+    var p = String(pressure.value);
+    var item = TABLES[mat] && TABLES[mat][d] ? TABLES[mat][d][p] : null;
+    if (item) {
+      status.textContent = SDR[mat][p] + " • ضخامت " + (item[0] == null ? "—" : item[0]) + " mm • وزن " + item[1] + " kg/m";
+      status.style.color = "#356b3b";
+    } else {
+      status.textContent = "برای این ترکیب در جدول داده‌ای ثبت نشده است.";
+      status.style.color = "#a23b32";
+    }
+  }
+
+  function calculate() {
+    var mat = material.value;
+    var d = String(diameter.value);
+    var p = String(pressure.value);
+    var len = num(length.value);
+    var price = num(kgPrice.value);
+    var item = TABLES[mat] && TABLES[mat][d] ? TABLES[mat][d][p] : null;
+
+    if (!item) {
+      alert("برای این سایز و فشار داده‌ای در جدول وجود ندارد.");
+      return false;
+    }
+    if (!(len > 0)) {
+      alert("متراژ را صحیح وارد کنید.");
+      length.focus();
+      return false;
+    }
+    if (!(price > 0)) {
+      alert("قیمت هر کیلو را وارد کنید.");
+      kgPrice.focus();
+      return false;
+    }
+
+    var thick = item[0];
+    var weight = item[1];
+    var unit = weight * price;
+    var total = unit * len;
+
+    document.getElementById("rSdr").textContent = SDR[mat][p] || "—";
+    document.getElementById("rThick").textContent = thick == null ? "—" : thick + " mm";
+    document.getElementById("rWeight").textContent = weight.toFixed(3) + " kg/m";
+    document.getElementById("rMeter").textContent = money(unit);
+    document.getElementById("rTotal").textContent = "قیمت کل: " + money(total);
+    return false;
+  }
+
+  material.addEventListener("change", update);
+  diameter.addEventListener("change", update);
+  pressure.addEventListener("change", update);
+  button.addEventListener("click", calculate);
+  button.onclick = calculate;
+  update();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();
+}
+</script>
+</body></html>
