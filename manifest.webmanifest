@@ -1,16 +1,20 @@
 {
-  "name":"KabirTool Accounting",
-  "short_name":"KabirTool",
-  "start_url":"./",
-  "display":"standalone",
-  "background_color":"#f5f6f4",
-  "theme_color":"#12351f",
-  "dir":"rtl",
-  "lang":"fa",
-  "icons":[
-    {"src":"apple-touch-icon-120.png","sizes":"120x120","type":"image/png"},
-    {"src":"apple-touch-icon-152.png","sizes":"152x152","type":"image/png"},
-    {"src":"apple-touch-icon-167.png","sizes":"167x167","type":"image/png"},
-    {"src":"apple-touch-icon-180.png","sizes":"180x180","type":"image/png"}
+  "name": "DataDev Pipe Weight Calculator — ماشین حساب وزن لوله",
+  "short_name": "DataDev Pipe",
+  "description": "Pipe weight, wall thickness and price from standard tables — PE, PP-R, PVC, UPVC, PEX, CPVC, ABS, PVDF, copper, steel, stainless.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0c1729",
+  "theme_color": "#14243d",
+  "dir": "auto",
+  "lang": "fa",
+  "categories": ["utilities", "productivity", "business"],
+  "icons": [
+    {"src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+    {"src": "assets/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}
   ]
 }
