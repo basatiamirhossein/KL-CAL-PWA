@@ -10,7 +10,6 @@ import { DATA } from './data.js';
  */
 
 export const CUSTOM = 'custom';
-export const CURRENCIES = ['IRR', 'IRT', 'USD', 'EUR', 'TRY', 'AED', 'SAR', 'IQD'];
 
 /** @type {Record<string, Family>} */
 export const FAMILIES = DATA.families;
@@ -23,17 +22,30 @@ const DIGITS = { '۰': 0, '۱': 1, '۲': 2, '۳': 3, '۴': 4, '۵': 5, '۶': 6, 
   '٠': 0, '١': 1, '٢': 2, '٣': 3, '٤': 4, '٥': 5, '٦': 6, '٧': 7, '٨': 8, '٩': 9 };
 
 /**
- * Parses user input written with Latin, Persian or Arabic digits and common separators.
+ * Parses user input written with Latin, Persian or Arabic digits and either decimal convention
+ * ("1,234.5", "1.234,5", "12,5", "۱۲٫۵").
  * @param {string} raw
  * @returns {number} NaN when empty or invalid
  */
 export function parseNumber(raw) {
-  const ascii = String(raw ?? '')
+  let text = String(raw ?? '')
     .trim()
     .replace(/[۰-۹٠-٩]/g, (d) => String(DIGITS[d]))
-    .replace(/[٬,\s']/g, '')
+    .replace(/[٬\s'’]/g, '')
     .replace(/٫/g, '.');
-  return ascii === '' ? NaN : Number(ascii);
+  if (text === '') return NaN;
+  const hasDot = text.includes('.');
+  const hasComma = text.includes(',');
+  if (hasDot && hasComma) {
+    // Whichever separator comes last is the decimal mark.
+    const decimal = text.lastIndexOf('.') > text.lastIndexOf(',') ? '.' : ',';
+    text = text.split(decimal === '.' ? ',' : '.').join('').replace(',', '.');
+  } else if (hasComma) {
+    text = /^\d{1,3}(,\d{3})+$/.test(text) ? text.replace(/,/g, '') : text.replace(',', '.');
+  } else if (hasDot && /^\d{1,3}(\.\d{3}){2,}$/.test(text)) {
+    text = text.replace(/\./g, '');
+  }
+  return Number(text);
 }
 
 /** @param {string} family @param {string} std */

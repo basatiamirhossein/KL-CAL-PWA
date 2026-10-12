@@ -1,5 +1,5 @@
 import { LANGS, detectLang, isLang, t } from './i18n.js';
-import { CURRENCIES, CUSTOM, DENSITIES, FAMILIES, GRADES, customPipe, getStandard, lookup, parseNumber, totals } from './calc.js';
+import { CUSTOM, DENSITIES, FAMILIES, GRADES, customPipe, getStandard, lookup, parseNumber, totals } from './calc.js';
 
 const STORAGE_KEY = 'datadev-pipe:v1';
 const FAMILY_KEYS = [...Object.keys(FAMILIES), CUSTOM];
@@ -22,7 +22,6 @@ const $ = (id) => /** @type {HTMLElement} */ (document.getElementById(id));
 /** @typedef {import('./i18n.js').Lang} Lang */
 const state = {
   /** @type {Lang} */ lang: 'fa',
-  currency: 'IRR',
   family: 'pe',
   /** @type {Record<string, string>} */ std: {},
   /** @type {Record<string, {size: string, cls: string}>} last size/class per family+standard */ picks: {},
@@ -47,7 +46,6 @@ function loadState() {
   } catch { /* storage unavailable — keep defaults */ }
   if (!isLang(state.lang)) state.lang = detectLang();
   if (!FAMILY_KEYS.includes(state.family)) state.family = 'pe';
-  if (!CURRENCIES.includes(state.currency)) state.currency = 'IRR';
 }
 
 function saveState() {
@@ -62,13 +60,9 @@ function fmt(value, digits = 3) {
   return new Intl.NumberFormat(locale(), { maximumFractionDigits: digits }).format(value);
 }
 
+/** Prices are unit-free: they come out in whatever currency the price per kg was entered in. */
 function money(value) {
-  if (state.currency === 'IRR' || state.currency === 'IRT') return `${fmt(value, 0)} ${tr(`cur.${state.currency}`)}`;
-  try {
-    return new Intl.NumberFormat(locale(), { style: 'currency', currency: state.currency, maximumFractionDigits: 2 }).format(value);
-  } catch {
-    return `${fmt(value, 2)} ${state.currency}`;
-  }
+  return fmt(value, 2);
 }
 
 function el(tag, attrs = {}, children = []) {
@@ -99,7 +93,6 @@ function applyLanguage() {
   const langOptions = Object.entries(LANGS).map(([k, v]) => [k, v.name]);
   fillSelect($('langSelect'), langOptions, state.lang);
   fillSelect($('setLang'), langOptions, state.lang);
-  fillSelect($('currency'), CURRENCIES.map((c) => [c, c === 'IRR' || c === 'IRT' ? tr(`cur.${c}`) : c]), state.currency);
 }
 
 // ------------------------------------------------------------------ calculator form
@@ -182,13 +175,14 @@ function renderForm() {
   renderStandardSeg();
   if (!custom) renderSizeAndClass();
   $('calcMeta').textContent = familyLabel(state.family);
-  $('priceUnit').textContent = state.currency === 'IRR' || state.currency === 'IRT' ? tr(`cur.${state.currency}`) : state.currency;
   renderPreview();
 }
 
 // ------------------------------------------------------------------ calculation
 function readInputs() {
-  state.price = /** @type {HTMLInputElement} */ ($('price')).value;
+  const price = /** @type {HTMLInputElement} */ ($('price'));
+  // While the field shows a grouped number, the raw value lives in data-raw.
+  state.price = price.dataset.raw ?? price.value;
   state.length = /** @type {HTMLInputElement} */ ($('length')).value;
   state.od = /** @type {HTMLInputElement} */ ($('od')).value;
   state.wall = /** @type {HTMLInputElement} */ ($('wall')).value;
@@ -354,7 +348,6 @@ function setLanguage(lang) {
 function bindEvents() {
   $('langSelect').addEventListener('change', (e) => setLanguage(e.target.value));
   $('setLang').addEventListener('change', (e) => setLanguage(e.target.value));
-  $('currency').addEventListener('change', (e) => { state.currency = e.target.value; renderForm(); calculate(); });
   $('size').addEventListener('change', (e) => {
     state.size = e.target.value;
     renderClasses(getStandard(state.family, currentStdKey()));
@@ -364,6 +357,8 @@ function bindEvents() {
   $('grade').addEventListener('change', (e) => { state.grade = e.target.value; calculate(); });
   $('material').addEventListener('change', (e) => { state.material = e.target.value; calculate(); });
   ['price', 'length', 'od', 'wall'].forEach((id) => $(id).addEventListener('input', calculate));
+  $('price').addEventListener('blur', formatPriceInput);
+  $('price').addEventListener('focus', unformatPriceInput);
   $('calcForm').addEventListener('submit', (e) => {
     e.preventDefault();
     calculate();
@@ -374,6 +369,21 @@ function bindEvents() {
   document.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => showView(b.dataset.go)));
 }
 
+// Show thousands separators while the price field is not being edited.
+function formatPriceInput() {
+  const input = /** @type {HTMLInputElement} */ ($('price'));
+  const value = parseNumber(input.dataset.raw ?? input.value);
+  if (!(Number.isFinite(value) && value > 0)) return;
+  input.dataset.raw = String(value);
+  input.value = fmt(value, 2);
+}
+
+function unformatPriceInput() {
+  const input = /** @type {HTMLInputElement} */ ($('price'));
+  if (input.dataset.raw !== undefined) input.value = input.dataset.raw;
+  delete input.dataset.raw;
+}
+
 function restoreInputs() {
   /** @type {HTMLInputElement} */ ($('price')).value = state.price;
   /** @type {HTMLInputElement} */ ($('length')).value = state.length || '1';
@@ -381,8 +391,11 @@ function restoreInputs() {
   /** @type {HTMLInputElement} */ ($('wall')).value = state.wall;
 }
 
+const isNativeApp = () => Boolean(window.Capacitor?.isNativePlatform?.());
+
 async function registerServiceWorker() {
-  if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
+  // The Android/iOS apps already ship every file inside the app, so only the web build needs a worker.
+  if (!('serviceWorker' in navigator) || location.protocol === 'file:' || isNativeApp()) return;
   try {
     await navigator.serviceWorker.register('sw.js');
   } catch (err) {
@@ -394,4 +407,6 @@ loadState();
 restoreInputs();
 bindEvents();
 renderAll();
+formatPriceInput();
+document.querySelector('.chip[aria-selected="true"]')?.scrollIntoView({ block: 'nearest', inline: 'center' });
 registerServiceWorker();

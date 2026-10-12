@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#14243d">
+<meta name="theme-color" content="#ECF0F6">
 <meta name="description" content="DataDev Pipe Weight Calculator — weight, wall thickness and price of PE, PP-R, PVC, UPVC, PEX, CPVC, ABS, PVDF, copper, carbon steel and stainless pipes.">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="DataDev Pipe">
 <title>ماشین حساب وزن لوله | DataDev</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -17,13 +17,11 @@
 <link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon-167.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180.png">
 <link rel="preload" href="assets/fonts/estedad.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/fonts/lexend.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/app.css">
 <script type="module" src="js/app.js"></script>
 </head>
 <body>
-<div class="sea" aria-hidden="true"></div>
-
 <div class="app">
   <header class="top">
     <div class="brand">
@@ -45,19 +43,51 @@
       <div class="hero glass">
         <h2 data-i18n-html="hero.title"></h2>
         <p data-i18n="hero.text"></p>
-        <svg class="hero-pipe" viewBox="0 0 160 130" aria-hidden="true">
-          <defs>
-            <linearGradient id="pg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#D0E1F2"/><stop offset=".45" stop-color="#6E9ECC"/><stop offset="1" stop-color="#223A5E"/></linearGradient>
-            <radialGradient id="ph"><stop offset="0" stop-color="#0c1729"/><stop offset=".7" stop-color="#14243d"/><stop offset="1" stop-color="#355982"/></radialGradient>
-          </defs>
-          <g transform="rotate(-18 80 65)">
-            <rect x="18" y="40" width="120" height="52" rx="4" fill="url(#pg)"/>
-            <rect x="18" y="44" width="120" height="6" fill="#F3F8FD" opacity=".55"/>
-            <ellipse cx="18" cy="66" rx="14" ry="26" fill="#9FC0E3"/>
-            <ellipse cx="18" cy="66" rx="9" ry="19" fill="url(#ph)"/>
-            <path class="drop" d="M18 92 q-4 14 2 22 q6 -8 -2 -22" fill="#0AFFFF" opacity=".75"/>
-          </g>
-        </svg>
+        <svg class="hero-pipe" viewBox="0 0 220 170" aria-hidden="true">
+  <defs>
+    <linearGradient id="pBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F3F8FD"/><stop offset=".18" stop-color="#D0E1F2"/>
+      <stop offset=".5" stop-color="#6E9ECC"/><stop offset=".82" stop-color="#355982"/><stop offset="1" stop-color="#223A5E"/>
+    </linearGradient>
+    <linearGradient id="pRim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F3F8FD"/><stop offset=".6" stop-color="#9FC0E3"/><stop offset="1" stop-color="#4D79A8"/>
+    </linearGradient>
+    <radialGradient id="pBore" cx=".62" cy=".42" r=".7">
+      <stop offset="0" stop-color="#0c1729"/><stop offset=".65" stop-color="#14243d"/><stop offset="1" stop-color="#2b4f7a"/>
+    </radialGradient>
+    <linearGradient id="pWater" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ADFFFF" stop-opacity=".95"/><stop offset="1" stop-color="#0AFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="pSoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.2"/></filter>
+  </defs>
+  <ellipse cx="112" cy="150" rx="78" ry="9" fill="#8B9BB8" opacity=".45" filter="url(#pSoft)"/>
+  <g transform="rotate(-16 120 90)">
+    <!-- far end -->
+    <ellipse cx="196" cy="88" rx="11" ry="32" fill="url(#pBody)"/>
+    <!-- body -->
+    <rect x="56" y="56" width="140" height="64" fill="url(#pBody)"/>
+    <rect x="56" y="63" width="140" height="5" rx="2.5" fill="#fff" opacity=".55"/>
+    
+    <!-- coupling band -->
+    <rect x="150" y="54" width="14" height="68" rx="3" fill="url(#pBody)"/>
+    <rect x="150" y="54" width="14" height="68" rx="3" fill="#0c1729" opacity=".12"/>
+    <rect x="152" y="60" width="3" height="56" rx="1.5" fill="#fff" opacity=".45"/>
+    <!-- open end: rim shows the wall thickness -->
+    <ellipse cx="56" cy="88" rx="12" ry="32" fill="url(#pRim)"/>
+    <ellipse cx="57.5" cy="88" rx="8.4" ry="24" fill="url(#pBore)"/>
+    <path d="M51 70 a8.4 24 0 0 1 9 -6" stroke="#fff" stroke-width="1.6" fill="none" opacity=".7" stroke-linecap="round"/>
+    <!-- water flowing out -->
+    <path d="M54 104 C 46 116, 40 128, 42 148 L 54 148 C 52 132, 56 120, 60 108 Z" fill="url(#pWater)" opacity=".85"/>
+    <circle class="drop d1" cx="46" cy="152" r="2.6" fill="#ADFFFF"/>
+    <circle class="drop d2" cx="53" cy="158" r="1.8" fill="#0AFFFF"/>
+    <!-- diameter callout -->
+    <g stroke="#1F5FC8" stroke-width="1.2" opacity=".75" fill="none">
+      <path d="M32 56 V120"/><path d="M29 59 l3 -4 3 4 M29 117 l3 4 3 -4"/>
+      <path d="M34 56 H48 M34 120 H48" stroke-dasharray="2 2"/>
+    </g>
+    <text x="16" y="92" fill="#1F5FC8" font-size="13" font-family="'Space Grotesk', sans-serif" font-weight="700">Ø</text>
+  </g>
+</svg>
       </div>
 
       <div class="sec"><h3 data-i18n="sec.type"></h3></div>
@@ -95,7 +125,7 @@
           </div>
           <div class="field">
             <label for="price"><span data-i18n="f.price"></span> <small class="opt" data-i18n="f.optional"></small></label>
-            <div class="with-unit"><input id="price" inputmode="decimal" autocomplete="off"><span class="unit" id="priceUnit"></span></div>
+            <input id="price" inputmode="decimal" autocomplete="off">
           </div>
           <div class="field">
             <label for="length" data-i18n="f.length"></label>
@@ -152,8 +182,7 @@
       <div class="sec"><h3 data-i18n="nav.settings"></h3></div>
       <div class="card glass">
         <div class="grid">
-          <div class="field"><label for="setLang" data-i18n="s.language"></label><select id="setLang"></select></div>
-          <div class="field"><label for="currency" data-i18n="s.currency"></label><select id="currency"></select></div>
+          <div class="field full"><label for="setLang" data-i18n="s.language"></label><select id="setLang"></select></div>
         </div>
       </div>
       <div class="sec"><h3 data-i18n="s.about"></h3></div>
@@ -162,8 +191,8 @@
 
     <footer class="foot">
       <span data-i18n="footer.dev"></span>: <b data-i18n="dev.name"></b>
-      <a class="dd-badge glass" href="https://github.com/basatiamirhossein" target="_blank" rel="noopener">
-        <img src="assets/icons/icon.svg" alt="" width="24" height="24"><b>DataDev</b>
+      <a class="dd-badge glass" href="https://datadevvv.ir" target="_blank" rel="noopener" aria-label="DataDev — datadevvv.ir">
+        <img src="assets/icons/icon.svg" alt="" width="26" height="26"><b>DataDev</b> <small>datadevvv.ir</small>
       </a>
     </footer>
   </main>
