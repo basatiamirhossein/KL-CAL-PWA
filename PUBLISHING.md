@@ -48,24 +48,64 @@ keytool -genkeypair -v -keystore datadev-upload.jks -alias upload \
 - `DataDev-Pipe.apk`: نسخه‌ی امضاشده برای نصب مستقیم.
 - `DataDev-Pipe.aab`: فایلی که در Google Play آپلود می‌شود.
 
-### ۳. انتشار در Google Play
+### ۳. انتشار در Google Play (چک‌لیست)
 
-1. در [Google Play Console](https://play.google.com/console) حساب توسعه‌دهنده بسازید. ثبت‌نام یک بار ۲۵ دلار هزینه دارد. حساب‌های شخصی جدید باید قبل از انتشار عمومی، یک دوره‌ی تست بسته (Closed testing) با چند تستر را بگذرانند.
-2. روی **Create app** بزنید. نام اپ را «DataDev Pipe» یا «ماشین حساب وزن لوله» بگذارید، زبان پیش‌فرض را انتخاب کنید و نوع اپ را App و رایگان تعیین کنید.
-3. بخش **App content** را کامل کنید:
-   - Privacy policy: لینک یک صفحه در datadevvv.ir. اپ هیچ داده‌ای جمع نمی‌کند و این را در متن بنویسید.
-   - Data safety: گزینه‌ی «No data collected».
-   - Ads: «No ads».
-   - Content rating و Target audience.
-4. **Store listing** را پر کنید:
-   - توضیح کوتاه و کامل.
-   - آیکون ۵۱۲×۵۱۲: از فایل `assets/icons/icon-512.png` استفاده کنید.
-   - تصویر ویژه (Feature graphic) ۱۰۲۴×۵۰۰.
-   - حداقل ۲ اسکرین‌شات از گوشی.
-5. از **Release → Testing → Closed/Internal testing** یک ریلیز بسازید و فایل `DataDev-Pipe.aab` را آپلود کنید. گزینه‌ی **Play App Signing** را بپذیرید؛ گوگل کلید نهایی را نگه می‌دارد و کلید شما فقط «کلید آپلود» است.
-6. بعد از دوره‌ی تست، از **Production → Create new release** همان فایل را منتشر کنید و برای بررسی بفرستید. بررسی معمولاً چند ساعت تا چند روز طول می‌کشد.
+همه‌ی محتوای فروشگاه آماده است:
 
-برای هر نسخه‌ی جدید، `versionCode` را در `android/app/build.gradle` یک واحد بالا ببرید و `versionName` را هم به‌روز کنید.
+| مورد | فایل |
+|---|---|
+| آیکون ۵۱۲×۵۱۲ | `store/icon-512.png` |
+| تصویر ویژه ۱۰۲۴×۵۰۰ | `store/feature-graphic.png` |
+| اسکرین‌شات‌ها (۱۰۸۰×۱۹۲۰) | `store/screenshots/fa-*.png` و `en-*.png` |
+| عنوان، توضیح کوتاه و کامل | `store/listing/fa.txt` و `store/listing/en.txt` |
+| سیاست حریم خصوصی | https://basatiamirhossein.github.io/KL-CAL-PWA/privacy.html |
+
+**کارهایی که فقط خودتان می‌توانید انجام دهید:**
+
+1. **حساب توسعه‌دهنده:**
+   - در [Google Play Console](https://play.google.com/console) ثبت‌نام کنید. هزینه یک بار ۲۵ دلار است.
+   - هویت خود را تأیید کنید.
+   - Google Play در حال حاضر از ایران پشتیبانی نمی‌کند، پس حساب و پرداخت باید از کشوری باشد که Google Play در آن فعال است.
+2. **ساخت اپ:**
+   - روی **Create app** بزنید.
+   - نام را «DataDev Pipe Weight Calculator» بگذارید و زبان پیش‌فرض را English (United States) انتخاب کنید.
+   - نوع اپ را App و Free انتخاب کنید.
+3. **App content:**
+   - Privacy policy: لینک بالا.
+   - Ads: خیر.
+   - Data safety: «No data collected / No data shared».
+   - Content rating: پرسشنامه را پر کنید؛ نتیجه «Everyone» است.
+   - Target audience: 18+.
+4. **Store listing:**
+   - متن و تصاویر را از پوشه‌ی `store/` بردارید.
+   - از بخش **Translations**، ترجمه‌ی فارسی را از `fa.txt` اضافه کنید.
+5. **اولین آپلود (دستی):**
+   - کلید آپلود را بسازید و Secretها را اضافه کنید (مرحله‌ی ۲).
+   - از تب Releases فایل `DataDev-Pipe.aab` را دانلود کنید.
+   - در **Testing → Internal testing → Create release** آپلود کنید.
+   - Play App Signing را بپذیرید.
+6. **تست بسته:**
+   - حساب‌های شخصی جدید باید قبل از انتشار عمومی یک دوره‌ی **Closed testing** (حداقل ۱۲ تستر به مدت ۱۴ روز) را بگذرانند.
+   - ایمیل تسترها را اضافه کنید و لینک تست را برایشان بفرستید.
+7. **انتشار:** بعد از تست، از **Production → Create new release** درخواست بررسی بدهید.
+
+### ۴. آپلود خودکار نسخه‌های بعدی
+
+بعد از اولین آپلود دستی، GitHub Actions می‌تواند هر نسخه‌ی جدید را خودش در Google Play بگذارد:
+
+1. در Play Console به **Setup → API access** بروید و یک **Service account** بسازید. یک کلید JSON از آن بگیرید و در Play Console به آن دسترسی **Release manager** بدهید.
+2. در گیت‌هاب، Secret جدیدی به نام `PLAY_SERVICE_ACCOUNT_JSON` بسازید و محتوای کامل فایل JSON را در آن بگذارید.
+3. از این به بعد، هر بار که تغییری روی `main` ثبت شود، فایل AAB با `versionCode` جدید ساخته می‌شود و در ترک **internal** آپلود می‌شود.
+4. اختیاری: در **Settings → Secrets and variables → Actions → Variables** این دو متغیر را تنظیم کنید:
+   - `PLAY_TRACK`: ترک مقصد، مثلاً `production`. پیش‌فرض `internal` است.
+   - `PLAY_RELEASE_STATUS`: بعد از تأیید اولین بررسی، مقدارش را `completed` بگذارید. پیش‌فرض `draft` است.
+
+### ۵. فروشگاه‌های ایرانی (کافه‌بازار و مایکت)
+
+برای کاربران داخل ایران می‌توانید همین اپ را در [کافه‌بازار](https://cafebazaar.ir/developers) و [مایکت](https://myket.ir/developer) هم منتشر کنید:
+- ثبت‌نام با کارت ملی انجام می‌شود و هزینه‌ای ندارد یا هزینه‌اش کم است.
+- فایل امضاشده‌ی `DataDev-Pipe.apk` را آپلود کنید.
+- متن، آیکون و اسکرین‌شات‌ها همان فایل‌های پوشه‌ی `store/` هستند.
 
 ---
 

@@ -1,7 +1,7 @@
 // Offline-first service worker. Bump VERSION whenever any precached file changes.
-const VERSION = 'datadev-pipe-v3.0.0';
+const VERSION = 'datadev-pipe-v3.0.1';
 const ASSETS = [
-  './', './index.html', './manifest.webmanifest', './css/app.css',
+  './', './index.html', './privacy.html', './manifest.webmanifest', './css/app.css',
   './js/app.js', './js/calc.js', './js/data.js', './js/i18n.js',
   './assets/icons/icon.svg', './assets/icons/icon-192.png', './assets/icons/icon-512.png',
   './assets/icons/icon-maskable-512.png', './assets/fonts/estedad.woff2', './assets/fonts/inter.woff2',
