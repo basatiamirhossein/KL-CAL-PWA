@@ -1,0 +1,39 @@
+# Google Play — en-US
+
+## Title (max 30 characters)
+DataDev Pipe Weight Calculator
+
+## Short description (max 80 characters)
+Pipe weight, wall & price for PE, PVC, PP-R, copper, steel & stainless. Offline
+
+## Full description
+DataDev Pipe Weight Calculator gives you the weight per metre, wall thickness, inside diameter and price of a pipe in seconds, straight from the standard tables. Built for contractors, pipe dealers, MEP engineers and buyers.
+
+Supported pipes:
+• Polyethylene PE80 / PE100 (ISO 4427, INSO 14427-2)
+• Polypropylene PP-R (DIN 8077)
+• PVC-U pressure pipe (ISO 1452) and ASTM D1785 Sch 40/80
+• PVC drainage (EN 1401, EN 1329)
+• PEX and PE-RT (ISO 22391, ISO 15875)
+• CPVC, ABS and PVDF
+• Copper (EN 1057, ASTM B88 Type K/L/M)
+• Carbon and galvanised steel (EN 10255 L/M/H, ASME B36.10 Sch 40/80/160)
+• Stainless steel grades 201, 304, 304L, 308, 309S, 310S, 316, 316L, 321 and 430 (ASME B36.19)
+• "Other": any outside diameter and wall with 22 material densities (aluminium, brass, ductile iron, titanium…)
+
+Features:
+• Weight per metre, total weight, price per metre and total price
+• Works with any currency — enter the price per kg in yours
+• Full weight table for every standard
+• Compare every pressure class of a size side by side
+• 5 languages: English, فارسی, العربية, Türkçe, Deutsch
+• Fully offline, no ads, no data collection
+
+Developer: Amirhossein Basati — DataDev
+datadevvv.ir
+
+## Category
+Tools
+
+## Privacy policy
+https://basatiamirhossein.github.io/KL-CAL-PWA/privacy.html

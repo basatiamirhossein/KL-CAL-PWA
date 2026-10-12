@@ -7,7 +7,7 @@ android {
         applicationId "ir.datadevvv.pipe"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
+        versionCode((System.getenv("VERSION_CODE") ?: "3").toInteger())  // CI sets a rising code for every Play upload
         versionName "3.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {

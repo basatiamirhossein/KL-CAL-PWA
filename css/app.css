@@ -68,10 +68,10 @@ h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; }
 
 /* Hero */
 .hero { margin-top: 22px; border-radius: 36px; padding: 24px 22px; position: relative; overflow: hidden; min-height: 176px; }
-.hero h2 { font-weight: 800; font-size: clamp(22px, 6.4vw, 27px); line-height: 1.4; max-width: 60%; letter-spacing: -.01em; }
+.hero h2 { font-weight: 800; font-size: clamp(21px, 6.2vw, 27px); line-height: 1.4; max-width: 58%; letter-spacing: -.01em; }
 .hero h2 em { font-style: normal; color: var(--blue); }
-.hero p { font-size: 13px; color: var(--ink-2); margin-top: 10px; max-width: 60%; line-height: 1.85; }
-.hero-pipe { position: absolute; inset-inline-end: -8px; top: 20px; width: 172px; stroke: none; }
+.hero p { font-size: 13px; color: var(--ink-2); margin-top: 10px; max-width: 58%; line-height: 1.85; }
+.hero-pipe { position: absolute; inset-inline-end: -8px; top: 20px; width: clamp(120px, 38vw, 172px); stroke: none; }
 .hero-pipe .drop { animation: drip 2.4s ease-in infinite; }
 .hero-pipe .d2 { animation-delay: 1.1s; }
 @keyframes drip { 0% { transform: translateY(-6px); opacity: 0; } 25% { opacity: 1; } 100% { transform: translateY(14px); opacity: 0; } }
@@ -166,6 +166,9 @@ tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
 .about { font-size: 13.5px; line-height: 2; color: var(--ink-2); }
 .sources { margin-top: 12px; padding-inline-start: 18px; font-family: var(--f-mono); font-size: 11.5px; line-height: 2; color: var(--ink-3); direction: ltr; text-align: left; }
 
+.privacy-row { margin-top: 16px; }
+.privacy-row .link { display: inline-block; text-decoration: none; }
+
 /* Footer */
 .foot { margin-top: 30px; text-align: center; font-size: 13px; color: var(--ink-2); line-height: 2.2; }
 .foot b { color: var(--ink); }
@@ -191,7 +194,6 @@ tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
 @media (max-width: 380px) {
   .grid { grid-template-columns: 1fr; }
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .hero h2, .hero p { max-width: 64%; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::after { animation: none !important; transition: none !important; }

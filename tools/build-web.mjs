@@ -6,7 +6,7 @@ import path from 'node:path';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const out = path.join(root, 'dist');
 const ENTRIES = [
-  'index.html', 'manifest.webmanifest', 'sw.js', 'favicon.png',
+  'index.html', 'privacy.html', 'manifest.webmanifest', 'sw.js', 'favicon.png',
   'apple-touch-icon-120.png', 'apple-touch-icon-152.png', 'apple-touch-icon-167.png', 'apple-touch-icon-180.png',
   'css', 'js', 'assets',
 ];
