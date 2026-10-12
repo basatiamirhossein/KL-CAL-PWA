@@ -1,11 +1,11 @@
 // Offline-first service worker. Bump VERSION whenever any precached file changes.
-const VERSION = 'datadev-pipe-v2.0.0';
+const VERSION = 'datadev-pipe-v2.1.0';
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './css/app.css',
   './js/app.js', './js/calc.js', './js/data.js', './js/i18n.js',
   './assets/sea.webp', './assets/icons/icon.svg', './assets/icons/icon-192.png', './assets/icons/icon-512.png',
-  './assets/icons/icon-maskable-512.png', './assets/fonts/inter.woff2', './assets/fonts/geist.woff2',
-  './assets/fonts/vazirmatn.woff2', './assets/fonts/byekan.woff2', './favicon.png',
+  './assets/icons/icon-maskable-512.png', './assets/fonts/estedad.woff2', './assets/fonts/lexend.woff2',
+  './assets/fonts/spacegrotesk-500.woff2', './assets/fonts/spacegrotesk-700.woff2', './favicon.png',
   './apple-touch-icon-120.png', './apple-touch-icon-152.png', './apple-touch-icon-167.png', './apple-touch-icon-180.png',
 ];
 
