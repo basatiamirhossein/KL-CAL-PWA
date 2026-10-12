@@ -1,0 +1,11 @@
+{
+  "appId": "ir.datadevvv.pipe",
+  "appName": "DataDev Pipe",
+  "webDir": "dist",
+  "backgroundColor": "#ECF0F6",
+  "android": { "allowMixedContent": false },
+  "ios": { "contentInset": "never", "backgroundColor": "#ECF0F6" },
+  "plugins": {
+    "SystemBars": { "insetsHandling": "css", "initialViewportFitValueHint": "cover" }
+  }
+}

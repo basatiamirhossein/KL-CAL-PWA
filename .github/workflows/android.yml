@@ -1,0 +1,89 @@
+name: Android build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      # ubuntu-latest already ships the Android SDK (ANDROID_HOME); Gradle fetches any missing platform.
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web app and sync into Android
+        run: npm run android
+
+      - name: Build installable APK (debug-signed)
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug
+          cp app/build/outputs/apk/debug/app-debug.apk ../DataDev-Pipe-debug.apk
+
+      - name: Decode upload keystore
+        if: env.HAS_KEYSTORE == 'true'
+        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/upload.jks"
+
+      - name: Build signed release APK and Play Store bundle
+        if: env.HAS_KEYSTORE == 'true'
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/upload.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          ./gradlew --no-daemon assembleRelease bundleRelease
+          cp app/build/outputs/apk/release/app-release.apk ../DataDev-Pipe.apk
+          cp app/build/outputs/bundle/release/app-release.aab ../DataDev-Pipe.aab
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DataDev-Pipe-android
+          path: |
+            DataDev-Pipe-debug.apk
+            DataDev-Pipe.apk
+            DataDev-Pipe.aab
+          if-no-files-found: ignore
+
+      - name: Publish to the "android-latest" release
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-latest
+          name: DataDev Pipe — Android (latest build)
+          prerelease: true
+          make_latest: false
+          body: |
+            Latest Android build of DataDev Pipe Weight Calculator from `${{ github.sha }}`.
+            - `DataDev-Pipe-debug.apk` — install directly on a phone (allow "install unknown apps").
+            - `DataDev-Pipe.apk` / `DataDev-Pipe.aab` — signed release builds, present once the upload-key secrets are configured. Upload the `.aab` to Google Play.
+          files: |
+            DataDev-Pipe-debug.apk
+            DataDev-Pipe.apk
+            DataDev-Pipe.aab
+          fail_on_unmatched_files: false

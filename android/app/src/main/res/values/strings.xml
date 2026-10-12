@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">DataDev Pipe</string>
+    <string name="title_activity_main">DataDev Pipe</string>
+    <string name="package_name">ir.datadevvv.pipe</string>
+    <string name="custom_url_scheme">ir.datadevvv.pipe</string>
+</resources>
