@@ -48,6 +48,13 @@ jobs:
           ./gradlew --no-daemon assembleDebug
           cp app/build/outputs/apk/debug/app-debug.apk ../DataDev-Pipe-debug.apk
 
+      - name: Build unsigned release APK (to sign offline with the upload key)
+        if: env.HAS_KEYSTORE != 'true'
+        working-directory: android
+        run: |
+          ./gradlew --no-daemon assembleRelease
+          cp app/build/outputs/apk/release/app-release-unsigned.apk ../DataDev-Pipe-release-unsigned.apk
+
       - name: Decode upload keystore
         if: env.HAS_KEYSTORE == 'true'
         run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/upload.jks"
@@ -70,6 +77,7 @@ jobs:
           name: DataDev-Pipe-android
           path: |
             DataDev-Pipe-debug.apk
+            DataDev-Pipe-release-unsigned.apk
             DataDev-Pipe.apk
             DataDev-Pipe.aab
           if-no-files-found: ignore
@@ -88,6 +96,7 @@ jobs:
             - `DataDev-Pipe.apk` / `DataDev-Pipe.aab` — signed release builds, present once the upload-key secrets are configured. Upload the `.aab` to Google Play.
           files: |
             DataDev-Pipe-debug.apk
+            DataDev-Pipe-release-unsigned.apk
             DataDev-Pipe.apk
             DataDev-Pipe.aab
           fail_on_unmatched_files: false
