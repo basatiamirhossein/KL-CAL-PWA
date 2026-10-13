@@ -58,7 +58,7 @@ keytool -genkeypair -v -keystore datadev-upload.jks -alias upload \
 | تصویر ویژه ۱۰۲۴×۵۰۰ | `store/feature-graphic.png` |
 | اسکرین‌شات‌ها (۱۰۸۰×۱۹۲۰) | `store/screenshots/fa-*.png` و `en-*.png` |
 | عنوان، توضیح کوتاه و کامل | `store/listing/fa.txt` و `store/listing/en.txt` |
-| سیاست حریم خصوصی | https://basatiamirhossein.github.io/KL-CAL-PWA/privacy.html |
+| سیاست حریم خصوصی | https://pipe.datadevvv.ir/privacy.html |
 
 **کارهایی که فقط خودتان می‌توانید انجام دهید:**
 

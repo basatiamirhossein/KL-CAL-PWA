@@ -37,4 +37,4 @@ datadevvv.ir
 Tools (ابزارها)
 
 ## سیاست حریم خصوصی
-https://basatiamirhossein.github.io/KL-CAL-PWA/privacy.html
+https://pipe.datadevvv.ir/privacy.html
